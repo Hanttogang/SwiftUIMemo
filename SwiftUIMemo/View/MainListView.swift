@@ -13,34 +13,47 @@ struct MainListView: View {
     @State private var showComposer: Bool = false
     
     
-    
-    
     var body: some View {
         
         NavigationView {
-                List(store.list) {memo in
+            List(store.list) {memo in
+                NavigationLink {
+                    DetailView(memo: memo)
+                } label: {
                     MemoCell(memo: memo)
                 }
-                .listStyle(.plain)
-                .navigationTitle("내 메모")
-                .toolbar {
-                    Button(action: {
-                        showComposer = true
-                    }, label: {
-                        Image(systemName: "plus")
-                    })
+            }
+            .listStyle(.plain)
+            .navigationTitle("내 메모")
+            .toolbar {
+                Button{
+                    showComposer = true
+                }label: {
+                    Image(systemName: "plus")
                 }
-                .sheet(isPresented: $showComposer, content: {
-                    ComposeView()
-                })
+            }
+            .sheet(isPresented: $showComposer, content: {
+                ComposeView()
+            })
         }
+        .navigationViewStyle(.stack)
     }
 }
 
-#Preview {
-    MainListView()
-        .environmentObject(MemoStore())
+
+struct MainList_Previews: PreviewProvider {
+    static var previews: some View {
+        MainListView()
+            .environmentObject(MemoStore())
+    }
 }
+
+//
+//#Preview {
+//        
+//    MainListView()
+//        .environmentObject(MemoStore())
+//}
 
 
 

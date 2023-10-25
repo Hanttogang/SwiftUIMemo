@@ -8,11 +8,62 @@
 import SwiftUI
 
 struct DetailView: View {
+    @ObservedObject var memo: Memo // 값이 바뀌면 뷰가 자동으로 업데이트
+    
+    @EnvironmentObject var store: MemoStore
+    
+    @State private var showComposer = false
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            ScrollView{
+                VStack{
+                    HStack {
+                        Text(memo.content)
+                            .padding()
+                        
+                        Spacer(minLength: 0)
+                    }
+                    
+                    Text(memo.insertDate, style: .date)
+                        .padding()
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .navigationTitle("메모 보기")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar{
+            ToolbarItemGroup(placement: .bottomBar) {
+                Button{
+                    showComposer = true
+                    
+                } label: {
+                    Image(systemName: "square.and.pencil")
+                }
+            }
+        }
+        .sheet(isPresented: $showComposer){
+            ComposeView(memo: memo)
+        }
     }
 }
 
-#Preview {
-    DetailView()
+
+struct DetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView{
+            DetailView(memo: Memo(content: "Title"))
+                .environmentObject(MemoStore())
+        }
+    }
 }
+
+//
+//#Preview {
+//    NavigationView
+//        .DetailView(memo: Memo(content: "Title"))
+//            .environmentObject(MemoStore())
+//    
+//}
